@@ -1,5 +1,9 @@
 pypdf
-langchain-community
+langchain~=0.3.25
+langchain_ollama
+langchain_chroma
+langchain-community~=0.3.23
 chromadb # Vector storage
 pytest
 boto3
+langchain-text-splitters~=0.3.8

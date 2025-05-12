@@ -1,12 +1,12 @@
 import argparse
 import os
 import shutil
-from langchain.document_loaders.pdf import PyPDFDirectoryLoader
+
+from get_embedding_function import get_embedding_function
+from langchain_chroma import Chroma
+from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.schema.document import Document
-from get_embedding_function import get_embedding_function
-from langchain.vectorstores.chroma import Chroma
-
 
 CHROMA_PATH = "chroma"
 DATA_PATH = "data"
@@ -46,7 +46,9 @@ def split_documents(documents: list[Document]):
 def add_to_chroma(chunks: list[Document]):
     # Load the existing database.
     db = Chroma(
-        persist_directory=CHROMA_PATH, embedding_function=get_embedding_function()
+        collection_name='chroma',
+        persist_directory=CHROMA_PATH,
+        embedding_function=get_embedding_function()
     )
 
     # Calculate Page IDs.
@@ -67,7 +69,6 @@ def add_to_chroma(chunks: list[Document]):
         print(f"👉 Adding new documents: {len(new_chunks)}")
         new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
         db.add_documents(new_chunks, ids=new_chunk_ids)
-        db.persist()
     else:
         print("✅ No new documents to add")
 
